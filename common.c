@@ -1,0 +1,1 @@
+//definições de funções para mandar p biblioteca

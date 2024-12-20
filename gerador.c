@@ -1,0 +1,1 @@
+//gerar arquivo .pbm a partir de um código informado
