@@ -1,0 +1,1 @@
+# Gerador-e-Leitor-de-EAN-8
