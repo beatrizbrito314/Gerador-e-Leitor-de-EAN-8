@@ -1,1 +1,0 @@
-//ler arquivo .pbm e gerar um código
