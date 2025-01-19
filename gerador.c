@@ -121,6 +121,7 @@ bool arquivoExiste(char *nomeArquivo) {
 
 // Recebe argumentos por linha de comando
 int main(int argc, char *argv[]) {
+    //No terminal: testeGerador.exe <codigo ean8>
     // Verifica se o usuário digitou o identificador
     if (argc < 2) {
         printf("Erro: identificador não informado. \n");
@@ -179,12 +180,12 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    // Nessa parte, as funções de commons.c e do próprio arquivo são chamadas
+    
     char codBin[68];
     codBin[0] = '\0';
     convercao(codBarras, codBin);
 
-    // Ajustando a largura real do código de barras
+    
     int larguraCodBarras = strlen(codBin); // Número real de barras
     int novaLarguraMatriz = larguraCodBarras * area; // Multiplica pelo número de pixels por barra
     int larguraTotal = novaLarguraMatriz + (2 * espacamento); // Largura total com o espaçamento lateral

@@ -3,6 +3,99 @@
 #include <string.h>
 #include <stdbool.h>
 #include "common.h" 
+// Função para extrair o código de barras a partir da versão codificada
+bool extraiCodigo(const char *codificado, char *novoCod) {
+    if (strlen(codificado) != 67) {
+        return false;
+    }
+
+    if (strncmp(codificado, "101", 3) != 0) return false;
+    if (strncmp(codificado + 31, "01010", 5) != 0) return false;
+    if (strncmp(codificado + 64, "101", 3) != 0) return false;
+
+    char temp[8];
+    int comecoCod = 3; 
+
+    for (int i = 0; i < 4; i++) {
+        strncpy(temp, codificado + comecoCod, 7);
+        temp[7] = '\0';
+        int decode = decodeDigitL(temp);
+        if (decode < 0) return false;
+        novoCod[i] = (char)('0' + decode);
+        comecoCod += 7;
+    }
+
+    comecoCod += 5; 
+
+    for (int i = 4; i < 8; i++) {
+        strncpy(temp, codificado + comecoCod, 7);
+        temp[7] = '\0';
+        int d = decodeDigitR(temp);
+        if (d < 0) return false;
+        novoCod[i] = (char)('0' + d);
+        comecoCod += 7;
+    }
+
+    novoCod[8] = '\0';
+    return true;
+}
+ imgPBM *lerImagemPBM(const char *nomeArquivo) {
+    // Abrir o arquivo PBM para leitura
+    //r=reader
+    FILE *arquivo = fopen(nomeArquivo, "r");
+    if (!arquivo) {
+        // verifica se consegue abrir o arquivo
+        fprintf(stderr, "Erro ao abrir o arquivo PBM: %s\n", nomeArquivo);
+        return NULL;
+    }
+    // Verifica o tipo de arquivo
+    char tipo[3];
+    // Lê o arquivo como entrada para leitura
+    fscanf(arquivo, "%2s", tipo);
+    if (strcmp(tipo, "P1") != 0) {
+        // Verifica se é P1
+        fprintf(stderr, "Erro: formato PBM invalido.\n");
+        fclose(arquivo); // Fecha o arquivo
+        return NULL;
+    }
+    // Lê altura e largura do arquivo
+    int largura, altura;
+    fscanf(arquivo, "%d %d", &largura, &altura);
+
+    // Aloca memória para a estrutura que armazenará a imagem
+    imgPBM *imagem = (imgPBM *)malloc(sizeof(imgPBM));
+    if (!imagem) {
+        fprintf(stderr, "ERRO: Falha ao alocar memoria para o arquivo.\n");
+        fclose(arquivo); // Fecha o arquivo
+        return NULL;
+    }
+
+    // Define a largura e altura da imagem
+    imagem->largura = largura;
+    imagem->altura = altura;
+
+    // Aloca memória para armazenar os pixels
+    imagem->pixels = (int *)malloc(largura * altura * sizeof(int));
+    if (!imagem->pixels) {
+        fprintf(stderr, "ERRO: Falha ao alocar memoria para o arquivo.\n");
+        free(imagem); // Libera a memória da estrutura da imagem
+        fclose(arquivo); // Fecha o arquivo
+        return NULL;
+    }
+
+    // Ler os pixels
+    for (int i = 0; i < altura; i++) { // Para cada linha da imagem
+        for (int j = 0; j < largura; j++) { // Para cada coluna na linha
+            int pixel;
+            fscanf(arquivo, "%d", &pixel); // Lê o pixel (0 ou 1)
+            imagem->pixels[i * largura + j] = pixel; // Armazena o valor do pixel
+        }
+    }
+    fclose(arquivo);
+
+    // Retorna o ponteiro para a imagem lida
+    return imagem;
+}
 
 // Função para encontrar o código de barras EAN-8 na imagem
 bool encontrarCodigoNaImagem(const imgPBM *imagem, char *codigoSaida) {
@@ -62,67 +155,11 @@ bool encontrarCodigoNaImagem(const imgPBM *imagem, char *codigoSaida) {
     return false; // Não encontrou o código
 }
 
- imgPBM *lerImagemPBM(const char *nomeArquivo) {
-    // Abrir o arquivo PBM para leitura
-    //r=reader
-    FILE *arquivo = fopen(nomeArquivo, "r");
-    if (!arquivo) {
-        // verifica se consegue abrir o arquivo
-        fprintf(stderr, "Erro ao abrir o arquivo PBM: %s\n", nomeArquivo);
-        return NULL;
-    }
-    // Verifica o tipo de arquivo
-    char tipo[3];
-    // Lê o arquivo como entrada para leitura
-    fscanf(arquivo, "%2s", tipo);
-    if (strcmp(tipo, "P1") != 0) {
-        // Verifica se é P1
-        fprintf(stderr, "Erro: formato PBM invalido.\n");
-        fclose(arquivo); // Fecha o arquivo
-        return NULL;
-    }
-    // Lê altura e largura do arquivo
-    int largura, altura;
-    fscanf(arquivo, "%d %d", &largura, &altura);
 
-    // Aloca memória para a estrutura que armazenará a imagem
-    imgPBM *imagem = (imgPBM *)malloc(sizeof(imgPBM));
-    if (!imagem) {
-        fprintf(stderr, "ERRO: Falha ao alocar memoria para o arquivo.\n");
-        fclose(arquivo); // Fecha o arquivo
-        return NULL;
-    }
-
-    // Define a largura e altura da imagem
-    imagem->largura = largura;
-    imagem->altura = altura;
-
-    // Aloca memória para armazenar os pixels
-    imagem->pixels = (int *)malloc(largura * altura * sizeof(int));
-    if (!imagem->pixels) {
-        fprintf(stderr, "ERRO: Falha ao alocar memoria para o arquivo.\n");
-        free(imagem); // Libera a memória da estrutura da imagem
-        fclose(arquivo); // Fecha o arquivo
-        return NULL;
-    }
-
-    // Ler os pixels
-    for (int i = 0; i < altura; i++) { // Para cada linha da imagem
-        for (int j = 0; j < largura; j++) { // Para cada coluna na linha
-            int pixel;
-            fscanf(arquivo, "%d", &pixel); // Lê o pixel (0 ou 1)
-            imagem->pixels[i * largura + j] = pixel; // Armazena o valor do pixel
-        }
-    }
-    fclose(arquivo);
-
-    // Retorna o ponteiro para a imagem lida
-    return imagem;
-}
 
 int main(int argc, char *argv[]) {
-    // No terminal: ./extrair.exe imagem.pbm
-    // ./extrai <arquivo PBM>
+    // No terminal:
+    // ./testeExtrair.exe <arquivo PBM>
 
     // Verifica a quantidade de argumentos passados no terminal
     if (argc < 2) {

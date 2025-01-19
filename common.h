@@ -17,9 +17,8 @@ bool codValido(const char *cod_barras);
 // Funções de cálculo
 int digitoVerificador(const char *cod_barras);
 
-// Funções de codificação e decodificação
+// Funções de codificação 
 void convercao(const char *codBarras, char *codificado);
-bool extraiCodigo(const char *codificado, char *novoCod);
 
 // Funções de decodificação
 int decodeDigitL(const char *codificado);
