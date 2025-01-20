@@ -4,6 +4,7 @@ Projeto 3° Unidade da disciplina Introdução às técnicas de programação - 
 Docentes: Edson Jackson de Medeiros Neto e Anna Giselle Camara Dantas Ribeiro Rodrigues
 
 Discentes: Emilly Beatriz Andrade Brito e Sarah Maria Lima do Nascimento
+
 -----------------------------------------------------------------------------------------
 Esse projeto tem como objetivo a criação de dois programas:
 1. Programa que gera um código de barras EAN-8 em formato PBM;
