@@ -17,4 +17,5 @@ O projeto é estruturado em:
 Para executar:
 1. testeGerador.exe identificador espaçamento(opicional) área(opicional) altura(opicional) nome(opicional)
 2. testeExtrair.exe imagem.pbm
-   
+------------------------------------------------------------------------------------------
+Vídeo de apresentaçãp: https://drive.google.com/file/d/1MAbkmb6zHb86iZieN10ldMljqBppWNDj/view?usp=sharing
