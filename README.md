@@ -12,6 +12,6 @@ O projeto é estruturado em:
 3. extrair.c: Extrai o identificador a partir de uma imagem PBM;
 -----------------------------------------------------------------------------------------
 Para executar:
-testeGerador.exe identificador espaçamento(opicional) área(opicional) altura(opicional) nome(opicional)
-testeExtrair.exe imagem.pbm
+-testeGerador.exe identificador espaçamento(opicional) área(opicional) altura(opicional) nome(opicional)
+-testeExtrair.exe imagem.pbm
    
